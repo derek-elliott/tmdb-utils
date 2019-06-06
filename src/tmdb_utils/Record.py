@@ -1,7 +1,10 @@
-import DataClasses as dc
-from typing import List
 import datetime
+from typing import List, Any
+
+import DataClasses as dc
+import Database as db
 from dateutil import parser
+
 
 class Record:
     """Represents a complete record of TMDB movie"""
@@ -55,8 +58,8 @@ class Record:
         collection = [dc.Collection(**collection) for collection in raw_record['belongs_to_collection']]
         companies = [dc.ProductionCompany(**company) for company in raw_record['production_companies']]
         keywords = [dc.Keyword(**keyword) for keyword in raw_record['keywords']]
-        cast = [dc.Cast(**person) for person in raw_record['cast']]
-        crew = [dc.Crew(**person) for person in raw_record['crew']]
+        cast = [dc.Cast(movie_id=raw_record['id'], **person) for person in raw_record['cast']]
+        crew = [dc.Crew(movie_id=raw_record['id'], **person) for person in raw_record['crew']]
         spoken_languages = [dc.Language(**language) for language in raw_record['spoken_languages']]
         countries = [dc.ProductionCountry(**country) for country in raw_record['production_countries']]
 
@@ -65,36 +68,97 @@ class Record:
 
                       production_countries=countries, **unchanged_items)
 
-
     def get_movie_insert_statement(self) -> str:
         """Generates an insert statement for the Movie table
 
         Returns:
             Movie insert string
         """
+        genre_ids = [genre.id for genre in self.genres]
+        production_company_ids = [company.id for company in self.production_companies]
+        production_country_ids = [country.id for country in self.production_countries]
+        spoken_language_ids = [language.id for language in self.spoken_languages]
+        keyword_ids = [keyword.id for keyword in self.keywords]
+        cast_ids = [person.id for person in self.cast]
+        crew_ids = [person.id for person in self.crew]
+
         return (f"INSERT INTO {self.table_name} VALUES({self.id}, "
-                f"{self.collection_id}, "
+                f"{self.collection.id}, "
                 f"{self.budget}, "
-                f"{self.genre_ids}, "
+                f"ARRAY [$${'$$ ,'.join(genre_ids)}$$], "
                 f"$${self.homepage}$$, "
                 f"{self.imdb_id}, "
-                f"{self.original_language_id}, "
+                f"{self.original_language.id}, "
                 f"$${self.original_title}$$, "
                 f"$${self.overview}$$, "
                 f"{self.popularity}, "
                 f"$${self.poster_path}$$, "
-                f"{self.production_company_ids}, "
-                f"{self.production_country_ids}, "
+                f"ARRAY [$${'$$ ,'.join(production_company_ids)}$$], "
+                f"ARRAY [$${'$$ ,'.join(production_country_ids)}$$], "
                 f"{self.release_date}, "
                 f"{self.runtime}, "
-                f"{self.spoken_language_ids}, "
+                f"ARRAY [$${'$$ ,'.join(spoken_language_ids)}$$], "
                 f"$${self.status}$$, "
                 f"$${self.tagline}$$, "
                 f"$${self.title}$$, "
-                f"{self.keyword_ids}, "
-                f"{self.cast_ids}, "
-                f"{self.crew_ids}, "
+                f"ARRAY [$${'$$ ,'.join(keyword_ids)}$$], "
+                f"ARRAY [$${'$$ ,'.join(cast_ids)}$$], "
+                f"ARRAY [$${'$$ ,'.join(crew_ids)}$$], "
                 f"{self.revenue}) ON CONFLICT (id) DO NOTHING")
 
-    def write_to_postgres(self):
-        
+    def write_to_postgres(self, database: db.Database):
+        """Writes the Movie to Postgres
+
+        Args:
+            database: Database object to write to
+
+        Returns:
+
+        """
+        self.original_language.id = self.get_id(self.original_language, database)
+        for language in self.spoken_languages:
+            language.id = self.get_id(language, database)
+        for country in self.production_countries:
+            country.id = self.get_id(country, database)
+
+        if not database.execute_insert(self.get_movie_insert_statement()):
+            print(f'Failed to write Movie: {self.title} to Postgres')
+        if database.execute_insert(self.collection.get_insert_statement()):
+            pass
+        else:
+            print(f'Failed to write Collection: {self.collection.name}')
+        for genre in self.genres:
+            if not database.execute_insert(genre.get_insert_statement()):
+                print(f'Failed to write Genre: {genre.name}')
+        for company in self.production_companies:
+            if not database.execute_insert(company.get_insert_statement()):
+                print(f'Failed to write Company: {company.name}')
+        for keyword in self.keywords:
+            if not database.execute_insert(keyword.get_insert_statement()):
+                print(f'Failed to write Keyword: {keyword.name}')
+        for person in self.cast:
+            if not database.execute_insert(person.get_insert_statement()):
+                print(f'Failed to write Cast: {person.name}')
+        for person in self.crew:
+            if not database.execute_insert(person.get_insert_statement()):
+                print(f'Failed to write Crew: {person.name}')
+        print(f'Successfully wrote Movie: {self.title} and related objects to Postgres')
+
+    @staticmethod
+    def get_id(obj: Any, database: db.Database) -> int:
+        """Gets the id of an object.  If the object doesn't exist in the database, will write it and return the new id
+
+        Args:
+            obj: Object to ge the id for
+            database: Database object to write to
+
+        Returns:
+            The id as an integer
+        """
+        orig_id = database.execute_query_for_one(obj.get_id_query_statement())
+        if orig_id is None:
+            database.execute_insert(obj.get_insert_statement())
+            return database.execute_query_for_one(obj.get_id_query_statement())
+        else:
+            return orig_id
+
