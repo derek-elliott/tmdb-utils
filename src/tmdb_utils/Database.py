@@ -11,7 +11,7 @@ class Database:
         self.db_name = db_name  #: Name of the database
         self.host = host  #: Database hostname
         self.port = port  #: Database port
-        self.connection = psycopg2.connect(f'host={self.host} dbname={self.db_name}, user={self.user}, '
+        self.connection = psycopg2.connect(f'host={self.host} dbname={self.db_name} user={self.user} '
                                            f'password={self.password}')  #: Database connection
 
     def execute_insert(self, statement: str) -> bool:
