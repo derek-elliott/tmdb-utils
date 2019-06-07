@@ -6,6 +6,7 @@ Defines objects for parts of a TMDB record and provides insert statements for Po
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class Collection:
     id: int  #: Collection id
@@ -157,7 +158,7 @@ class Cast:
                 f"{self.movie_id}, "
                 f"{self.cast_id}, "
                 f"$${self.credit_id}$$, "
-                f"ARRAY[$${'$$, '.join(self.character.split('/'))}$$], "
+                f"ARRAY[$${'$$, $$'.join([x.lstrip() for x in self.character.split('/')])}$$], "
                 f"{self.gender}, "
                 f"$${self.name}$$, "
                 f"{self.order}, "

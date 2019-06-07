@@ -4,10 +4,6 @@
 import pytest
 import tmdb_utils.DataClasses as dc
 
-__author__ = "Derek Elliott"
-__copyright__ = "Derek Elliott"
-__license__ = "mit"
-
 
 def test_collection():
     collection = dc.Collection(1, 'Test Collection', '/my/poster/path', '/ma/backdrop/path')
@@ -21,7 +17,7 @@ def test_genre():
 
 def test_productioncompany():
     company = dc.ProductionCompany(1, 'ACME')
-    assert company.get_insert_statement() == "INSERT INTO {self.table_name} VALUES(1, $$ACME$$) ON CONFLICT (id) DO NOTHING"
+    assert company.get_insert_statement() == "INSERT INTO tmdb_production_companies VALUES(1, $$ACME$$) ON CONFLICT (id) DO NOTHING"
 
 
 def test_country():
@@ -29,6 +25,7 @@ def test_country():
     country_without_id = dc.Country('US', 'USA')
     assert country_with_id.get_insert_statement() == "INSERT INTO tmdb_countries VALUES(1, $$US$$, $$USA$$) ON CONFLICT (id) DO NOTHING"
     assert country_without_id.get_insert_statement() == "INSERT INTO tmdb_countries(iso_3166_1, name) VALUES($$US$$, $$USA$$) ON CONFLICT (id) DO NOTHING"
+    assert country_with_id.get_id_query_statement() == "SELECT id FROM tmdb_countries WHERE iso_3166_1=US"
 
 
 def test_language():
@@ -36,6 +33,7 @@ def test_language():
     language_without_id = dc.Language('EN', 'English')
     assert language_with_id.get_insert_statement() == "INSERT INTO tmdb_languages VALUES(1, $$EN$$, $$English$$) ON CONFLICT (id) DO NOTHING"
     assert language_without_id.get_insert_statement() == "INSERT INTO tmdb_languages(iso_639_1, name) VALUES($$EN$$, $$English$$) ON CONFLICT (id) DO NOTHING"
+    assert language_with_id.get_id_query_statement() == "SELECT id FROM tmdb_languages WHERE iso_639_1=EN"
 
 
 def test_keyword():
@@ -50,4 +48,4 @@ def test_cast():
 
 def test_crew():
     person = dc.Crew(1, 1, 'abc123', 'Admin', 1, 'Director', 'John Doe', '/path/to/profile')
-    assert person.get_insert_statement() == "INSERT INTO tmdb_crew VALUES(1, 1, $$abc123$$, $$Admin$$, 1, $$Director$$, $$John Doe$$, $${self.profile_path}$$) ON CONFLICT (id) DO NOTHING"
+    assert person.get_insert_statement() == "INSERT INTO tmdb_crew VALUES(1, 1, $$abc123$$, $$Admin$$, 1, $$Director$$, $$John Doe$$, $$/path/to/profile$$) ON CONFLICT (id) DO NOTHING"
