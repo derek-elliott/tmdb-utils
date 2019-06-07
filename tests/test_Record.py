@@ -32,6 +32,7 @@ def test_from_dict():
     with open('test_data/test_record.json', 'r') as f:
         raw_dict = json.load(f)
     record = Record.from_dict(raw_dict)
+    print(record)
     assert record is not None
 
 
@@ -44,7 +45,7 @@ def test_get_movie_insert_statement():
                                                    "14000000, "
                                                    "ARRAY [35], "
                                                    "$$$$, "
-                                                   "tt2637294, "
+                                                   "$$tt2637294$$, "
                                                    "en, "
                                                    "$$Hot Tub Time Machine 2$$, "
                                                    "$$When Lou, who has become the \"father of the Internet,\" is shot by an unknown assailant, Jacob and Nick fire up the time machine again to save their friend.$$, "

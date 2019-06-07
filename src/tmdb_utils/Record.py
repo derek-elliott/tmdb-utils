@@ -75,8 +75,8 @@ class Record:
         """
         genre_ids = ' ,'.join([str(genre.id) for genre in self.genres])
         production_company_ids = ', '.join([str(company.id) for company in self.production_companies])
-        production_country_ids = ', '.join([str(country.id) for country in self.production_countries if country.id is not None])
-        spoken_language_ids = ', '.join([str(language.id) for language in self.spoken_languages if language.id is not None])
+        production_country_ids = ', '.join([str(country.id) for country in self.production_countries if country.id is not ''])
+        spoken_language_ids = ', '.join([str(language.id) for language in self.spoken_languages if language.id is not ''])
         keyword_ids = ', '.join([str(keyword.id) for keyword in self.keywords])
 
         return (f"INSERT INTO {self.table_name} VALUES({self.id}, "
