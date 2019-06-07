@@ -110,7 +110,6 @@ class Record:
         Returns:
 
         """
-        self.original_language.id = self.get_id(self.original_language, database)
         for language in self.spoken_languages:
             language.id = self.get_id(language, database)
         for country in self.production_countries:
