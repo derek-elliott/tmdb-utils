@@ -69,7 +69,11 @@ class Database:
             self.connection.rollback()
             return None
         self.connection.commit()
-        return list(cur)[0]
+        data = list(cur)
+        if len(data) == 0:
+            return None
+        else:
+            return list(cur)[0]
 
     def set_up_tables(self):
         """Creates the tables needed for the TMDB database"""

@@ -150,6 +150,7 @@ class Record:
             The id as an integer
         """
         orig_id = database.execute_query_for_one(obj.get_id_query_statement())
+
         if orig_id is None:
             database.execute_insert(obj.get_insert_statement())
             return database.execute_query_for_one(obj.get_id_query_statement())
