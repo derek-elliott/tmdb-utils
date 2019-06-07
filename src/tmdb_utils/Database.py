@@ -73,7 +73,7 @@ class Database:
         if len(data) == 0:
             return None
         else:
-            return data[0]
+            return data[0][0]
 
     def set_up_tables(self):
         """Creates the tables needed for the TMDB database"""
