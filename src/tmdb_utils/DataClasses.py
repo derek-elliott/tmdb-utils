@@ -86,7 +86,7 @@ class Country:
         Returns:
             Country query string
         """
-        return f"SELECT id FROM {self.table_name} WHERE iso_3166_1={self.iso_3166_1}"
+        return f'SELECT id FROM {self.table_name} WHERE iso_3166_1="{self.iso_3166_1}"'
 
 
 @dataclass
@@ -116,7 +116,7 @@ class Language:
         Returns:
             Language query string
         """
-        return f"SELECT id FROM {self.table_name} WHERE iso_639_1={self.iso_639_1}"
+        return f'SELECT id FROM {self.table_name} WHERE iso_639_1="{self.iso_639_1}"'
 
 
 @dataclass

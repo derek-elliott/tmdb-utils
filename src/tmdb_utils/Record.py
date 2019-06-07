@@ -84,7 +84,7 @@ class Record:
                 f"{self.budget}, "
                 f"ARRAY [{genre_ids}], "
                 f"$${self.homepage}$$, "
-                f"{self.imdb_id}, "
+                f"$${self.imdb_id}$$, "
                 f"{self.original_language}, "
                 f"$${self.original_title}$$, "
                 f"$${self.overview}$$, "
