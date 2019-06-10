@@ -86,7 +86,7 @@ class Database:
     imdb_id varchar(20),
     original_language_id varchar(2),
     original_title varchar(255),
-    overview varchar(512),
+    overview varchar(1024),
     popularity numeric,
     poster_path varchar(255),
     production_company_ids integer ARRAY,
