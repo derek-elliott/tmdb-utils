@@ -77,8 +77,7 @@ class Database:
 
     def set_up_tables(self):
         """Creates the tables needed for the TMDB database"""
-        commands = ['DROP TABLE tmdb_movies, tmdb_collection, tmdb_genres, tmdb_production_companies, tmdb_countries, tmdb_languages, tmdb_keywords, tmdb_cast, tmdb_crew;',
-                    """CREATE TABLE IF NOT EXISTS tmdb_movies (
+        commands = ["""CREATE TABLE IF NOT EXISTS tmdb_movies (
     id integer PRIMARY KEY,
     collection_id integer,
     budget integer,

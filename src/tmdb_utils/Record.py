@@ -92,7 +92,7 @@ class Record:
                 f"$${self.poster_path}$$, "
                 f"ARRAY [{production_company_ids}], "
                 f"ARRAY [{production_country_ids}], "
-                f"{self.release_date}, "
+                f"$${self.release_date}&&, "
                 f"{self.runtime}, "
                 f"ARRAY [{spoken_language_ids}], "
                 f"$${self.status}$$, "
