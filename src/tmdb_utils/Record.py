@@ -141,7 +141,6 @@ class Record:
         for person in self.crew:
             if not database.execute_insert(person.get_insert_statement()):
                 print(f'Failed to write Crew: {person.name}')
-        print(f'Successfully wrote Movie: {self.title} and related objects to Postgres')
 
     @staticmethod
     def get_id(obj: Any, database: db.Database) -> int:
