@@ -80,7 +80,7 @@ class Record:
         keyword_ids = ', '.join([str(keyword.id) for keyword in self.keywords])
 
         return (f"INSERT INTO {self.table_name} VALUES({self.id}, "
-                f"{self.collection.id if self.collection.id != -1 else ''}, "
+                f"{self.collection.id if self.collection.id != -1 else '$$$$'}, "
                 f"{self.budget}, "
                 f"ARRAY [{genre_ids}], "
                 f"$${self.homepage}$$, "
