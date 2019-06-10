@@ -94,7 +94,7 @@ class Database:
     release_date date,
     runtime numeric,
     spoken_language_ids integer ARRAY,
-    status varchar(10),
+    status varchar(20),
     tagline varchar(255),
     title varchar(255),
     keyword_ids integer ARRAY,
