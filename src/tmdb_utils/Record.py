@@ -1,4 +1,5 @@
 import datetime
+import ast
 from typing import List, Any
 
 from . import DataClasses as dc
@@ -52,6 +53,16 @@ class Record:
         basic_keys = ['id', 'budget', 'homepage', 'imdb_id', 'original_language', 'original_title', 'overview', 'popularity', 'poster_path',
                       'runtime', 'status', 'tagline', 'title', 'revenue', ]
         unchanged_items = {key: value for key, value in raw_record.items() if key in basic_keys}
+        json_columns = ['belongs_to_collection', 'genres', 'production_companies', 'production_countries',
+                        'spoken_languages', 'keywords', 'cast', 'crew']
+        for key, value in raw_record.items():
+            if key in json_columns:
+                if value == '' or value == '#N/A':
+                    raw_record[key] = []
+                else:
+                    raw_record[key] = ast.literal_eval(value)
+            else:
+                raw_record[key] = value
         release_date = parser.parse(raw_record['release_date'], fuzzy_with_tokens=True)[0].date()
 
         genres = [dc.Genre(**genre) for genre in raw_record['genres']]
