@@ -98,7 +98,7 @@ class Record:
                 f"{production_array_string}"
                 f"{country_array_string}"
                 f"$${self.release_date}$$, "
-                f"{self.runtime if self.runtime is not None else 'Null'}, "
+                f"{self.runtime if self.runtime is not '' else 'Null'}, "
                 f"{language_array_string}"
                 f"$${self.status}$$, "
                 f"$${self.tagline}$$, "
