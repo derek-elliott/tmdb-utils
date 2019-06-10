@@ -74,6 +74,7 @@ class Record:
             Movie insert string
         """
         genre_ids = ' ,'.join([str(genre.id) for genre in self.genres])
+        genre_array_string = f"ARRAY [{genre_ids}], " if len(genre_ids) >= 1 else "NULL, "
         production_company_ids = ', '.join([str(company.id) for company in self.production_companies])
         production_array_string = f"ARRAY [{production_company_ids}], " if len(production_company_ids) >= 1 else "NULL, "
         production_country_ids = ', '.join([str(country.id) for country in self.production_countries if country.id is not ''])
