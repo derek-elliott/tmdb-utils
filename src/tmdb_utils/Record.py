@@ -87,7 +87,7 @@ class Record:
         return (f"INSERT INTO {self.table_name} VALUES({self.id}, "
                 f"{self.collection.id if self.collection.id != -1 else 'NULL'}, "
                 f"{self.budget}, "
-                f"ARRAY [{genre_ids}], "
+                f"{genre_array_string}"
                 f"$${self.homepage}$$, "
                 f"$${self.imdb_id}$$, "
                 f"$${self.original_language}$$, "
