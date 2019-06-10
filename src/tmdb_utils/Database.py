@@ -85,7 +85,7 @@ class Database:
     genre_ids integer ARRAY,
     homepage varchar(255),
     imdb_id varchar(20),
-    original_language_id integer ARRAY,
+    original_language_id varchar(2),
     original_title varchar(255),
     overview varchar(255),
     popularity numeric,
