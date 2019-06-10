@@ -55,7 +55,7 @@ class Record:
         release_date = parser.parse(raw_record['release_date'], fuzzy_with_tokens=True)[0].date()
 
         genres = [dc.Genre(**genre) for genre in raw_record['genres']]
-        collection = [dc.Collection(**collection) for collection in raw_record['belongs_to_collection']][0] if len(raw_record['belongs_to_collection']) != 0  else None
+        collection = [dc.Collection(**collection) for collection in raw_record['belongs_to_collection']][0] if len(raw_record['belongs_to_collection']) != 0  else dc.Collection(id=-1)
         companies = [dc.ProductionCompany(**company) for company in raw_record['production_companies']]
         keywords = [dc.Keyword(**keyword) for keyword in raw_record['keywords']]
         cast = [dc.Cast(movie_id=raw_record['id'], **person) for person in raw_record['cast']]
@@ -80,7 +80,7 @@ class Record:
         keyword_ids = ', '.join([str(keyword.id) for keyword in self.keywords])
 
         return (f"INSERT INTO {self.table_name} VALUES({self.id}, "
-                f"{self.collection.id if self.collection.id is not None else ''}, "
+                f"{self.collection.id if self.collection.id != -1 else ''}, "
                 f"{self.budget}, "
                 f"ARRAY [{genre_ids}], "
                 f"$${self.homepage}$$, "
