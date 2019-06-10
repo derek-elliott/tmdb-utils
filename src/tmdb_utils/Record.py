@@ -75,9 +75,13 @@ class Record:
         """
         genre_ids = ' ,'.join([str(genre.id) for genre in self.genres])
         production_company_ids = ', '.join([str(company.id) for company in self.production_companies])
+        production_array_string = f"ARRAY [{production_company_ids}], " if len(production_company_ids) >= 1 else "NULL"
         production_country_ids = ', '.join([str(country.id) for country in self.production_countries if country.id is not ''])
+        country_array_string = f"ARRAY [{production_country_ids}], " if len(production_country_ids) >= 1 else "NULL"
         spoken_language_ids = ', '.join([str(language.id) for language in self.spoken_languages if language.id is not ''])
+        language_array_string = f"ARRAY [{spoken_language_ids}], " if len(spoken_language_ids) >= 1 else "NULL"
         keyword_ids = ', '.join([str(keyword.id) for keyword in self.keywords])
+        keyword_array_string = f"ARRAY [{keyword_ids}], " if len(keyword_ids) >= 1 else "NULL"
 
         return (f"INSERT INTO {self.table_name} VALUES({self.id}, "
                 f"{self.collection.id if self.collection.id != -1 else 'NULL'}, "
@@ -90,15 +94,15 @@ class Record:
                 f"$${self.overview}$$, "
                 f"{self.popularity}, "
                 f"$${self.poster_path}$$, "
-                f"ARRAY [{production_company_ids}], "
-                f"ARRAY [{production_country_ids}], "
+                f"{production_array_string}"
+                f"{country_array_string}"
                 f"$${self.release_date}$$, "
                 f"{self.runtime}, "
-                f"ARRAY [{spoken_language_ids}], "
+                f"{language_array_string}"
                 f"$${self.status}$$, "
                 f"$${self.tagline}$$, "
                 f"$${self.title}$$, "
-                f"ARRAY [{keyword_ids}], "
+                f"{keyword_array_string}"
                 f"{self.revenue}) ON CONFLICT (id) DO NOTHING")
 
     def write_to_postgres(self, database: db.Database):
